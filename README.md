@@ -54,3 +54,5 @@ Under the directory kubernetes, I have created the `charts` subdirectory and `Ch
 
 Currently I am using `kubelet apply` to first add config-maps and secrets and then `deployment.yaml`
 
+- Apply for db first and then app.
+- Then access app over `localhost:30007`
