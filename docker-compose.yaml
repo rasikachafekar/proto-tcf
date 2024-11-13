@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  webapp:
+    image: tcf:v0.2
+    container_name: tcf_app
+    restart: always
+    ports:
+      - 5000:5000
+    # volumes:
+    #   - ./code:/code
+    depends_on:
+      - db
+      - pgadmin
+    command: ["python", "/root/app/tcf/main.py"]
+  db:
+    image: pg:v0.4
+    container_name: local_pg
+    restart: always
+    hostname: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+      POSTGRES_HOST: postgres
+    volumes:
+      - ./local_pgdata:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container1
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@domain-name.com
+      PGADMIN_DEFAULT_PASSWORD: test
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  local_pgdata:
+  pgadmin-data:
+  code:

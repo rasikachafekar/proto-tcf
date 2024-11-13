@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  DB_URL: "postgresql://test:test@localhost:5432/test"
+  PORT: "5000"

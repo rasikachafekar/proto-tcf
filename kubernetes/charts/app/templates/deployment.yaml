@@ -1,0 +1,67 @@
+# Added the service configuration in this file for convenience until
+# i can start using helm charts for deployment
+# This file currently contains service object config so as to allow me to 
+# use one kubelet apply command to deploy this.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proto-tcf
+  labels:
+    app: tcf-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+       app: tcf-app
+  template:
+    metadata:
+      labels:
+        app: tcf-app
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+      - name: tcf-app
+        image: tcf:v0.9
+        #imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DB_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_URL
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: PORT
+        - name: PG_HOST
+          value: tcf-db-service.default.svc.cluster.local
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: pg-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pg-secret
+              key: POSTGRES_PASSWORD
+
+---
+
+# To be removed when transition to helm charts happens
+apiVersion: v1
+kind: Service
+metadata:
+  name: tcf-app-svc
+spec:
+  type: NodePort
+  selector:
+    app: tcf-app
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 30007

@@ -1,0 +1,61 @@
+# Added the service configuration in this file for convenience until
+# i can start using helm charts for deployment
+# This file currently contains service object config so as to allow me to 
+# use one kubelet apply command to deploy this.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tcf-db-deployment
+  labels:
+    app: pg-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pg-db
+  template:
+    metadata:
+      labels:
+        app: pg-db
+    spec:
+      containers:
+      - name: pg-db
+        image: pg:v0.4
+        #image: postgres:17
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: pg-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pg-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: pg-config
+              key: POSTGRES_DB
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: pg-config
+              key: POSTGRES_HOST
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tcf-db-service
+spec:
+  selector:
+    app: pg-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

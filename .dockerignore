@@ -1,0 +1,6 @@
+app/code/venv/
+app/code/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python

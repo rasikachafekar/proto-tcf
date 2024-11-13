@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tcf
+spec:
+  containers:
+  - name: tcf-app
+    image: tcf:v0.2
+    ports:
+    - containerPort: 5000
+  - name: tcf-db
+    image: pg:v0.2
+    ports:
+    - containerPort: 5432

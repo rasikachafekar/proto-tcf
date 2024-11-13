@@ -1,0 +1,6 @@
+apiVersion: v2
+name: app
+appVersion: "0.1.0"
+version: 0.1.0
+description: "Flask app to handle requests coming to the TCF website"
+type: application
